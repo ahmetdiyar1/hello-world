@@ -1,0 +1,33 @@
+Test-panosu =
+    bom:
+        "24V güç kaynağı": "p24v"
+        "PLC": "plc"
+        "Galvo kontrol kartı": "cc"
+        "Omron-RS232 kablosu": "c5"
+        "Otomatik sigorta": "1A": "c6"
+        "Klemens": 
+            "2'li": "x1"
+            "3'lü kısa devreli": "x2, x3"
+        
+
+    netlist:
+        +x -------1"Faz": "x1.1 c6.1" 
+        +x -------2"Nötr": "x1.2 p24v.N"
+
+        +x -------3: "c6.2 p24v.L"
+        +x -------4: "p24v.+ x2.1 plc.+"
+        +x -------5: "p24v.- x3.1 plc.-"
+
+        +x--------4"plc.out_com": "x2.1"
+        +x--------5"plc.in_com": "x3.1"
+
+        	  # Physical trigger simulation
+        +x--------6: "plc.q_0 cc.i0_+"      # Trigger device.Vcc
+        +x--------5"cc.i0_-": "p24v.-"     # Trigger device.Vout
+
+                  # CC Busy connection
+        +x--------7: "cc.q0_- plc.in_0"
+        +x--------4"cc.q0_+": "p24v.+"
+
+        +x--------"c5.OMRON": "plc.COMM(1)"
+        +x--------"c5.RS232": "cc.RS232"
